@@ -56,10 +56,6 @@ tableTypes' rowGen { rowTypeName = "PA"
   "../data/pat_abstracts.csv"
 
 
--- tableTypes' rowGen { rowTypeName = "PatAbstracts"
---                    , columnNames = [ "PatId", "PatAbs" ] }
---   "../data/pat_abstracts.csv"
-
 patStream :: Producer PA IO ()
 patStream = readTableOpt pAParser "../data/pat_abstracts.csv"
 

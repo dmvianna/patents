@@ -14,22 +14,18 @@ import Frames
 
 -- fun types
 
-data PatAbs =
-  ZipUS Int Int Int Int Int
-  | ZipWorld Char Char Char Char Char
+data Addr = StatePost Text Int | NoAdress
   deriving (Eq, Ord, Show, Typeable)
 
-type instance VectorFor PatAbs = V.Vector
+type instance VectorFor Addr = V.Vector
 
-instance Readable PatAbs where
-  fromText t
-    | T.length t == 5 = let cs@[v,w,x,y,z] = T.unpack t
-                            [a,b,c,d,e] = map C.digitToInt cs
-                        in if all C.isDigit cs
-                           then return $ ZipUS a b c d e
-                           else return $ ZipWorld v w x y z
-    | otherwise = mzero
+instance Readable Addr where
+  -- fromText t
+  --   | T.length t == 5 = if all C.isDigit cs
+  --                       then return $ StatePost s p
+  --                       else return $ NoAddress
+  --   | otherwise = mzero
 
-instance Parseable PatAbs where
+instance Parseable Addr where
 
-type MyColumns = PatAbs ': CommonColumns
+type MyColumns = Addr ': CommonColumns
