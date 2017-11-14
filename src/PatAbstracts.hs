@@ -54,7 +54,7 @@ type StateTerritory = ByteString
 data Address = POBoxAddress POBox City StateTerritory PostCode deriving (Eq, Ord, Show)
 
 spaceOrStop :: Parser String
-spaceOrStop = many $ oneOf ". "
+spaceOrStop = many $ oneOf ". ,"
 
 poBox :: Parser Text
 poBox = do
@@ -72,16 +72,17 @@ poBox = do
   return $ T.pack [p,o,b,o',x]
 
 digits :: Parser Text
-digits = spaces >> T.pack <$> some digit
+digits = spaceOrStop >> T.pack <$> some digit
 
 skipUntil :: Parser Text -> Parser Text
 skipUntil p = try p <|> (T.singleton <$> anyChar >> skipUntil p)
 
-parsePobox :: Parser Text
-parsePobox = do
-  _ <- skipUntil poBox
-  d <- digits
-  return d
 
--- parseByteString (parsePOBox) mempty addEx
--- parseByteString (many $ notFollowedBy poBox >> parsePOBox >> many anyChar >> EOF) mempty addEx
+
+main :: IO ()
+main = hspec $ do
+
+  describe "Test address parsing" $ do
+    it "can ignore leading text" $ do
+      let (Success x) = parseByteString (skipUntil poBox >> digits) mempty addEx
+      x `shouldBe` "3898"
