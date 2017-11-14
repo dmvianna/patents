@@ -53,18 +53,21 @@ type StateTerritory = ByteString
 
 data Address = POBoxAddress POBox City StateTerritory PostCode deriving (Eq, Ord, Show)
 
+spaceOrStop :: Parser String
+spaceOrStop = many $ oneOf ". "
+
 poBox :: Parser Text
 poBox = do
   skipOptional (oneOf "Gg")
-  _ <- spaces
+  _ <- spaceOrStop
   p <- oneOf "Pp"
-  _ <- spaces
+  _ <- spaceOrStop
   o <- oneOf "Oo"
-  _ <- spaces
+  _ <- spaceOrStop
   b <- oneOf "Bb"
-  _ <- spaces
+  _ <- spaceOrStop
   o' <- oneOf "Oo"
-  _ <- spaces
+  _ <- spaceOrStop
   x <- oneOf "Xx"
   return $ T.pack [p,o,b,o',x]
 
