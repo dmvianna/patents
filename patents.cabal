@@ -30,3 +30,4 @@ executable patents
                      , vector
                      , vinyl
                      , raw-strings-qq
+                     , hspec

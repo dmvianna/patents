@@ -10,13 +10,12 @@ import Control.Applicative
 import Data.ByteString (ByteString)
 import Text.RawString.QQ
 import Text.Trifecta
-import Data.Text
+import qualified Data.Text as T hiding (Text)
+import Test.Hspec
 
 -- Frames
 import Control.Monad (mzero)
--- import qualified Data.Char as C
 import Data.Readable (Readable(fromText))
-import qualified Data.Text as T
 import Data.Typeable
 import Frames.ColumnTypeable (Parseable)
 import qualified Data.Vector as V
@@ -54,13 +53,23 @@ type StateTerritory = ByteString
 
 data Address = POBoxAddress POBox City StateTerritory PostCode deriving (Eq, Ord, Show)
 
-parsePOBox :: Parser String
-parsePOBox = do
-  _ <- spaces
-  _ <- skipOptional $ char 'G'
-  _ <- text "PO"
-  _ <- spaces
-  _ <- text "BOX"
-  _ <- spaces
-  d <- some digit
+poBox :: Parser Text
+poBox = skipOptional (char 'G' <|> char 'g')
+        >> (text "PO" <|> text "Po" <|> text "po" <|> text "GPO")
+        >> spaces
+        >> (text "Box" <|> text "BOX" <|> text "box")
+
+digits :: Parser Text
+digits = spaces >> T.pack <$> some digit
+
+skipStart :: Parser Text
+skipStart = T.pack <$> (many anyChar <* notFollowedBy (text "PO"))
+
+parsePobox :: Parser Text
+parsePobox = do
+  _ <- skipStart
+  _ <- poBox
+  d <- digits
   return d
+-- parseByteString (parsePOBox) mempty addEx
+-- parseByteString (many $ notFollowedBy poBox >> parsePOBox >> many anyChar >> EOF) mempty addEx
