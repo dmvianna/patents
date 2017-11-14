@@ -78,12 +78,30 @@ digits = spaceOrStop >> T.pack <$> some digit
 skipUntil :: Parser Text -> Parser Text
 skipUntil p = try p <|> (T.singleton <$> anyChar >> skipUntil p)
 
-
+takeUntil :: Parser Text -> Parser Text
+takeUntil p' =
+  go p' T.empty
+  where
+    go p xs =
+      (try p >> return xs) <|> do
+      c <- anyChar
+      go p (T.snoc xs c)
+  
 
 main :: IO ()
 main = hspec $ do
 
   describe "Test address parsing" $ do
     it "can ignore leading text" $ do
-      let (Success x) = parseByteString (skipUntil poBox >> digits) mempty addEx
+      let (Success x) =
+            parseByteString (skipUntil poBox >> digits) mempty addEx
       x `shouldBe` "3898"
+  describe "Test city and state/territory parsing" $ do
+    it "can extract the city and state from in between po box and postcode" $ do
+      let (Success x) =
+            parseByteString (skipUntil poBox
+                             >> digits
+                             >> spaceOrStop
+                             >> takeUntil digits) mempty addEx
+      x `shouldBe` "SYDNEY NSW"
+            
