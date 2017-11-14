@@ -7,6 +7,7 @@ module PatAbstracts where
 -- Parsing
 
 import Control.Applicative
+import Data.Char
 import Data.ByteString (ByteString)
 import Text.RawString.QQ
 import Text.Trifecta
@@ -44,12 +45,12 @@ type MyColumns = Addr ': CommonColumns
 -- parsing
 
 addEx :: ByteString
-addEx = [r|ABSTRACT (11 Document No. AU-A-10803/92 (19) AUSTRALIAN PATENT OFFICE (54) Title FILM CARTRIDGE BAR CODE SCANNER AND CONTROLLER FOR A DIGITAL IMAGING SYSTEM International Patent Classification(s) (51) 5 G03B007/24 G06K009/18 (21) Application No. 10803/92 (22) Application Date 06.02.92 Priority Data (31) Number (32) Date (33) Country 656605 19.02.91 US UNITED STATES OF AMERICA (43) Publication Date 27.08.92 (71) Applicant(s) MINNESOTA MINING AND MANUFACTURING COMPANY (72) Inventor(s) RICHARD RANDALL LEMBERGER; TERRENCE HAROLD JOYCE (74) Attorney or Agent SPRUSON FERGUSON, GPO Box 3898, SYDNEY NSW 2001 (57) Claim 1. A laser imaging system, comprising: a cartridge of photographic film; a machine readable information bearing medium associated with the cartridge and including information characterizing the cartridge and/or film; a laser imager, including: a cartridge receiving mechanism; a laser scanning system including a laser for imaging the film; and a reading device for reading the information from the information bearing medium; and an image management system responsive to image input data and coupled to the laser imager, for controlling the laser imager as a function of the input data and the information read from the information bearing medium. I I|]
+addEx = [r|ABSTRACT (11 DOCUMENT NO. AU-A-10803/92 (19) AUSTRALIAN PATENT OFFICE (54) TITLE FILM CARTRIDGE BAR CODE SCANNER AND CONTROLLER FOR A DIGITAL IMAGING SYSTEM INTERNATIONAL PATENT CLASSIFICATION(S) (51) 5 G03B007/24 G06K009/18 (21) APPLICATION NO. 10803/92 (22) APPLICATION DATE 06.02.92 PRIORITY DATA (31) NUMBER (32) DATE (33) COUNTRY 656605 19.02.91 US UNITED STATES OF AMERICA (43) PUBLICATION DATE 27.08.92 (71) APPLICANT(S) MINNESOTA MINING AND MANUFACTURING COMPANY (72) INVENTOR(S) RICHARD RANDALL LEMBERGER; TERRENCE HAROLD JOYCE (74) ATTORNEY OR AGENT SPRUSON FERGUSON, GPO BOX 3898, SYDNEY NSW 2001 (57) CLAIM 1. A LASER IMAGING SYSTEM, COMPRISING: A CARTRIDGE OF PHOTOGRAPHIC FILM; A MACHINE READABLE INFORMATION BEARING MEDIUM ASSOCIATED WITH THE CARTRIDGE AND INCLUDING INFORMATION CHARACTERIZING THE CARTRIDGE AND/OR FILM; A LASER IMAGER, INCLUDING: A CARTRIDGE RECEIVING MECHANISM; A LASER SCANNING SYSTEM INCLUDING A LASER FOR IMAGING THE FILM; AND A READING DEVICE FOR READING THE INFORMATION FROM THE INFORMATION BEARING MEDIUM; AND AN IMAGE MANAGEMENT SYSTEM RESPONSIVE TO IMAGE INPUT DATA AND COUPLED TO THE LASER IMAGER, FOR CONTROLLING THE LASER IMAGER AS A FUNCTION OF THE INPUT DATA AND THE INFORMATION READ FROM THE INFORMATION BEARING MEDIUM. I I|]
 
-type POBox = Int
-type PostCode = Int
-type City = ByteString
-type StateTerritory = ByteString
+type POBox = Text
+type PostCode = Text
+type City = Text
+type StateTerritory = Text
 
 data Address = POBoxAddress POBox City StateTerritory PostCode deriving (Eq, Ord, Show)
 
@@ -58,17 +59,17 @@ spaceOrStop = many $ oneOf ". ,"
 
 poBox :: Parser Text
 poBox = do
-  skipOptional (oneOf "Gg")
+  skipOptional $ char 'G'
   _ <- spaceOrStop
-  p <- oneOf "Pp"
+  p <- char 'P'
   _ <- spaceOrStop
-  o <- oneOf "Oo"
+  o <- char 'O'
   _ <- spaceOrStop
-  b <- oneOf "Bb"
+  b <- char 'B'
   _ <- spaceOrStop
-  o' <- oneOf "Oo"
+  o' <- char 'O'
   _ <- spaceOrStop
-  x <- oneOf "Xx"
+  x <- char 'X'
   return $ T.pack [p,o,b,o',x]
 
 digits :: Parser Text
