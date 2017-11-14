@@ -13,6 +13,7 @@ import Text.RawString.QQ
 import Text.Trifecta
 import Text.Parser.LookAhead
 import qualified Data.Text as T hiding (Text)
+import Data.Text.Encoding
 import Test.Hspec
 
 -- Frames
@@ -29,48 +30,51 @@ import Frames
 data Addr = StatePost Text Int | NoAdress
   deriving (Eq, Ord, Show, Typeable)
 
-type instance VectorFor Addr = V.Vector
+type instance VectorFor Address = V.Vector
 
-instance Readable Addr where
-  fromText t = undefined
-  -- fromText t
-  --   | T.length t == 5 = if all C.isDigit cs
-  --                       then return $ StatePost s p
-  --                       else return $ NoAddress
-  --   | otherwise = mzero
+instance Readable Address where
+  fromText t =
+    case
+      parseByteString poboxAddress mempty (
+      (encodeUtf8 . T.toCaseFold) t) of
+      Success x -> pure x
+      Failure _ -> pure NoAddress
 
-instance Parseable Addr where
+instance Parseable Address where
 
-type MyColumns = Addr ': CommonColumns
+type MyColumns = Address ': CommonColumns
 
 -- parsing
 
 addEx :: ByteString
-addEx = [r|ABSTRACT (11 DOCUMENT NO. AU-A-10803/92 (19) AUSTRALIAN PATENT OFFICE (54) TITLE FILM CARTRIDGE BAR CODE SCANNER AND CONTROLLER FOR A DIGITAL IMAGING SYSTEM INTERNATIONAL PATENT CLASSIFICATION(S) (51) 5 G03B007/24 G06K009/18 (21) APPLICATION NO. 10803/92 (22) APPLICATION DATE 06.02.92 PRIORITY DATA (31) NUMBER (32) DATE (33) COUNTRY 656605 19.02.91 US UNITED STATES OF AMERICA (43) PUBLICATION DATE 27.08.92 (71) APPLICANT(S) MINNESOTA MINING AND MANUFACTURING COMPANY (72) INVENTOR(S) RICHARD RANDALL LEMBERGER; TERRENCE HAROLD JOYCE (74) ATTORNEY OR AGENT SPRUSON FERGUSON, GPO BOX 3898, SYDNEY NSW 2001 (57) CLAIM 1. A LASER IMAGING SYSTEM, COMPRISING: A CARTRIDGE OF PHOTOGRAPHIC FILM; A MACHINE READABLE INFORMATION BEARING MEDIUM ASSOCIATED WITH THE CARTRIDGE AND INCLUDING INFORMATION CHARACTERIZING THE CARTRIDGE AND/OR FILM; A LASER IMAGER, INCLUDING: A CARTRIDGE RECEIVING MECHANISM; A LASER SCANNING SYSTEM INCLUDING A LASER FOR IMAGING THE FILM; AND A READING DEVICE FOR READING THE INFORMATION FROM THE INFORMATION BEARING MEDIUM; AND AN IMAGE MANAGEMENT SYSTEM RESPONSIVE TO IMAGE INPUT DATA AND COUPLED TO THE LASER IMAGER, FOR CONTROLLING THE LASER IMAGER AS A FUNCTION OF THE INPUT DATA AND THE INFORMATION READ FROM THE INFORMATION BEARING MEDIUM. I I|]
+addEx = [r|abstract (11 document no. au-a-10803/92 (19) australian patent office (54) title film cartridge bar code scanner and controller for a digital imaging system international patent classification(s) (51) 5 g03b007/24 g06k009/18 (21) application no. 10803/92 (22) application date 06.02.92 priority data (31) number (32) date (33) country 656605 19.02.91 us united states of america (43) publication date 27.08.92 (71) applicant(s) minnesota mining and manufacturing company (72) inventor(s) richard randall lemberger; terrence harold joyce (74) attorney or agent spruson ferguson, gpo box 3898, sydney nsw 2001 (57) claim 1. a laser imaging system, comprising: a cartridge of photographic film; a machine readable information bearing medium associated with the cartridge and including information characterizing the cartridge and/or film; a laser imager, including: a cartridge receiving mechanism; a laser scanning system including a laser for imaging the film; and a reading device for reading the information from the information bearing medium; and an image management system responsive to image input data and coupled to the laser imager, for controlling the laser imager as a function of the input data and the information read from the information bearing medium. i i|]
 
 type POBox = Text
 type PostCode = Text
 type City = Text
 type StateTerritory = Text
 
-data Address = POBoxAddress POBox City StateTerritory PostCode deriving (Eq, Ord, Show)
+data Address =
+  POBoxAddress POBox City StateTerritory PostCode
+  | NoAddress
+  deriving (Eq, Ord, Show)
 
 spaceOrStop :: Parser String
 spaceOrStop = many $ oneOf ". ,"
 
 poBox :: Parser Text
 poBox = do
-  skipOptional $ char 'G'
+  skipOptional $ char 'g'
   _ <- spaceOrStop
-  p <- char 'P'
+  p <- char 'p'
   _ <- spaceOrStop
-  o <- char 'O'
+  o <- char 'o'
   _ <- spaceOrStop
-  b <- char 'B'
+  b <- char 'b'
   _ <- spaceOrStop
-  o' <- char 'O'
+  o' <- char 'o'
   _ <- spaceOrStop
-  x <- char 'X'
+  x <- char 'x'
   return $ T.pack [p,o,b,o',x]
 
 digits :: Parser Text
@@ -106,7 +110,7 @@ poboxAddress = do
 main :: IO ()
 main = hspec $ do
 
-  describe "Test address parsing" $ do
+  describe "Test GPO BOX address parsing" $ do
     it "can ignore leading text" $ do
       let (Success x) =
             parseByteString (skipUntil poBox >> spaceOrStop >> digits) mempty addEx
@@ -119,10 +123,10 @@ main = hspec $ do
                              >> digits
                              >> spaceOrStop
                              >> takeUntil digits) mempty addEx
-      x `shouldBe` "SYDNEY NSW "
+      x `shouldBe` "sydney nsw "
   describe "Test PO Box address parsing" $ do
     it "can extract a type corresponding to a full PO Box address" $ do
       let (Success x) =
             parseByteString poboxAddress mempty addEx
-      x `shouldBe` POBoxAddress "3898" "SYDNEY" "NSW" "2001"
+      x `shouldBe` POBoxAddress "3898" "sydney" "nsw" "2001"
             
