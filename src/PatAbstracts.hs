@@ -54,22 +54,31 @@ type StateTerritory = ByteString
 data Address = POBoxAddress POBox City StateTerritory PostCode deriving (Eq, Ord, Show)
 
 poBox :: Parser Text
-poBox = skipOptional (char 'G' <|> char 'g')
-        >> (text "PO" <|> text "Po" <|> text "po" <|> text "GPO")
-        >> spaces
-        >> (text "Box" <|> text "BOX" <|> text "box")
+poBox = do
+  skipOptional (oneOf "Gg")
+  _ <- spaces
+  p <- oneOf "Pp"
+  _ <- spaces
+  o <- oneOf "Oo"
+  _ <- spaces
+  b <- oneOf "Bb"
+  _ <- spaces
+  o' <- oneOf "Oo"
+  _ <- spaces
+  x <- oneOf "Xx"
+  return $ T.pack [p,o,b,o',x]
 
 digits :: Parser Text
 digits = spaces >> T.pack <$> some digit
 
-skipStart :: Parser Text
-skipStart = T.pack <$> (many anyChar <* notFollowedBy (text "PO"))
+skipUntil :: Parser Text -> Parser Text
+skipUntil p = try p <|> (T.singleton <$> anyChar >> skipUntil p)
 
 parsePobox :: Parser Text
 parsePobox = do
-  _ <- skipStart
-  _ <- poBox
+  _ <- skipUntil poBox
   d <- digits
   return d
+
 -- parseByteString (parsePOBox) mempty addEx
 -- parseByteString (many $ notFollowedBy poBox >> parsePOBox >> many anyChar >> EOF) mempty addEx
