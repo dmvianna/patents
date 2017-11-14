@@ -22,12 +22,13 @@ executable patents
                      , bytestring
                      , foldl
                      , ghc-mod
+                     , hspec
                      , microlens
+                     , parsers
                      , pipes
+                     , raw-strings-qq
                      , readable
                      , text
                      , trifecta
                      , vector
                      , vinyl
-                     , raw-strings-qq
-                     , hspec

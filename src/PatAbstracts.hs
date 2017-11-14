@@ -11,6 +11,7 @@ import Data.Char
 import Data.ByteString (ByteString)
 import Text.RawString.QQ
 import Text.Trifecta
+import Text.Parser.LookAhead
 import qualified Data.Text as T hiding (Text)
 import Test.Hspec
 
@@ -83,7 +84,7 @@ takeUntil p' =
   go p' T.empty
   where
     go p xs =
-      (try p >> return xs) <|> do -- need to find a way not to consume p
+      (try (lookAhead p) >> return xs) <|> do -- need to find a way not to consume p
       c <- anyChar
       go p (T.snoc xs c)
   
@@ -98,8 +99,8 @@ poboxAddress = do
       a = T.stripEnd a''
       s = T.stripStart s'
   _ <- spaceOrStop
-  -- p <- digits -- p should be consumed here
-  return $ POBoxAddress b a s s -- don't forget to include p here
+  p <- digits -- p should be consumed here
+  return $ POBoxAddress b a s p
 
 
 main :: IO ()
@@ -108,14 +109,20 @@ main = hspec $ do
   describe "Test address parsing" $ do
     it "can ignore leading text" $ do
       let (Success x) =
-            parseByteString (skipUntil poBox >> digits) mempty addEx
+            parseByteString (skipUntil poBox >> spaceOrStop >> digits) mempty addEx
       x `shouldBe` "3898"
   describe "Test city and state/territory parsing" $ do
     it "can extract the city and state from in between po box and postcode" $ do
       let (Success x) =
             parseByteString (skipUntil poBox
+                             >> spaceOrStop
                              >> digits
                              >> spaceOrStop
                              >> takeUntil digits) mempty addEx
-      x `shouldBe` "SYDNEY NSW"
+      x `shouldBe` "SYDNEY NSW "
+  describe "Test PO Box address parsing" $ do
+    it "can extract a type corresponding to a full PO Box address" $ do
+      let (Success x) =
+            parseByteString poboxAddress mempty addEx
+      x `shouldBe` POBoxAddress "3898" "SYDNEY" "NSW" "2001"
             
