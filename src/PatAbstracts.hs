@@ -73,7 +73,7 @@ poBox = do
   return $ T.pack [p,o,b,o',x]
 
 digits :: Parser Text
-digits = spaceOrStop >> T.pack <$> some digit
+digits = T.pack <$> some digit
 
 skipUntil :: Parser Text -> Parser Text
 skipUntil p = try p <|> (T.singleton <$> anyChar >> skipUntil p)
@@ -83,10 +83,24 @@ takeUntil p' =
   go p' T.empty
   where
     go p xs =
-      (try p >> return xs) <|> do
+      (try p >> return xs) <|> do -- need to find a way not to consume p
       c <- anyChar
       go p (T.snoc xs c)
   
+poboxAddress :: Parser Address
+poboxAddress = do
+  _ <- skipUntil poBox
+  _ <- spaceOrStop
+  b <- digits
+  _ <- spaceOrStop
+  a' <- takeUntil (spaceOrStop >> digits)
+  let (a'', s') = T.breakOnEnd " " a'
+      a = T.stripEnd a''
+      s = T.stripStart s'
+  _ <- spaceOrStop
+  -- p <- digits -- p should be consumed here
+  return $ POBoxAddress b a s s -- don't forget to include p here
+
 
 main :: IO ()
 main = hspec $ do
