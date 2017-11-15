@@ -27,9 +27,6 @@ import Frames
 
 -- column types
 
-data Addr = StatePost Text Int | NoAdress
-  deriving (Eq, Ord, Show, Typeable)
-
 type instance VectorFor Address = V.Vector
 
 instance Readable Address where
@@ -38,11 +35,11 @@ instance Readable Address where
       parseByteString poboxAddress mempty (
       (encodeUtf8 . T.toCaseFold) t) of
       Success x -> pure x
-      Failure _ -> pure NoAddress
+      Failure e -> pure $ NoAddress e
 
 instance Parseable Address where
 
-type MyColumns = Address ': CommonColumns
+type MyColumns = '[Bool, Int, Double, Address, Text]
 
 -- parsing
 
@@ -56,8 +53,15 @@ type StateTerritory = Text
 
 data Address =
   POBoxAddress POBox City StateTerritory PostCode
-  | NoAddress
-  deriving (Eq, Ord, Show)
+  | NoAddress ErrInfo
+  deriving Show
+
+instance Eq Address where
+  NoAddress _ == _ = False
+  _ == NoAddress _ = False
+  POBoxAddress a b c d == POBoxAddress a' b' c' d' =
+    (a == a') && (b == b') && (c == c') && (d == d')
+  
 
 spaceOrStop :: Parser String
 spaceOrStop = many $ oneOf ". ,"
@@ -129,4 +133,9 @@ main = hspec $ do
       let (Success x) =
             parseByteString poboxAddress mempty addEx
       x `shouldBe` POBoxAddress "3898" "sydney" "nsw" "2001"
-            
+  -- describe "Test no address" $ do
+  --   it "fails and returns NoAddress when there is no address in text" $ do
+  --     let (Failure e) =
+  --           parseByteString poboxAddress mempty "000000000"
+  --     e `shouldBe` NoAddress $ ErrInfo {_errDoc = 
+          

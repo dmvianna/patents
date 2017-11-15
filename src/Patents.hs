@@ -55,9 +55,10 @@ tableTypes' rowGen { rowTypeName = "PA"
                    , columnUniverse = $(colQ ''MyColumns) }
   "../data/pat_abstracts.csv"
 
-
 patStream :: Producer PA IO ()
 patStream = readTableOpt pAParser "../data/pat_abstracts.csv"
 
 loadPat :: IO (Frame PA)
 loadPat = inCoreAoS patStream
+
+-- mapM_ print (take 3 (F.toList a))
