@@ -92,7 +92,7 @@ takeUntil p' =
   go p' T.empty
   where
     go p xs =
-      (try (lookAhead p) >> return xs) <|> do -- need to find a way not to consume p
+      (try (lookAhead p) >> return xs) <|> do
       c <- anyChar
       go p (T.snoc xs c)
   
@@ -107,7 +107,7 @@ poboxAddress = do
       a = T.stripEnd a''
       s = T.stripStart s'
   _ <- spaceOrStop
-  p <- digits -- p should be consumed here
+  p <- digits
   return $ POBoxAddress b a s p
 
 
@@ -133,9 +133,5 @@ main = hspec $ do
       let (Success x) =
             parseByteString poboxAddress mempty addEx
       x `shouldBe` POBoxAddress "3898" "sydney" "nsw" "2001"
-  -- describe "Test no address" $ do
-  --   it "fails and returns NoAddress when there is no address in text" $ do
-  --     let (Failure e) =
-  --           parseByteString poboxAddress mempty "000000000"
-  --     e `shouldBe` NoAddress $ ErrInfo {_errDoc = 
+
           
