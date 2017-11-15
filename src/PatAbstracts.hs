@@ -43,7 +43,7 @@ type MyColumns = '[Bool, Int, Double, Address, Text]
 
 -- parsing
 
-addEx :: ByteString
+addEx :: Text
 addEx = [r|abstract (11 document no. au-a-10803/92 (19) australian patent office (54) title film cartridge bar code scanner and controller for a digital imaging system international patent classification(s) (51) 5 g03b007/24 g06k009/18 (21) application no. 10803/92 (22) application date 06.02.92 priority data (31) number (32) date (33) country 656605 19.02.91 us united states of america (43) publication date 27.08.92 (71) applicant(s) minnesota mining and manufacturing company (72) inventor(s) richard randall lemberger; terrence harold joyce (74) attorney or agent spruson ferguson, gpo box 3898, sydney nsw 2001 (57) claim 1. a laser imaging system, comprising: a cartridge of photographic film; a machine readable information bearing medium associated with the cartridge and including information characterizing the cartridge and/or film; a laser imager, including: a cartridge receiving mechanism; a laser scanning system including a laser for imaging the film; and a reading device for reading the information from the information bearing medium; and an image management system responsive to image input data and coupled to the laser imager, for controlling the laser imager as a function of the input data and the information read from the information bearing medium. i i|]
 
 type POBox = Text
@@ -117,7 +117,8 @@ main = hspec $ do
   describe "Test GPO BOX address parsing" $ do
     it "can ignore leading text" $ do
       let (Success x) =
-            parseByteString (skipUntil poBox >> spaceOrStop >> digits) mempty addEx
+            parseByteString (skipUntil poBox >> spaceOrStop >> digits) mempty
+            $ (encodeUtf8 . T.toCaseFold) addEx
       x `shouldBe` "3898"
   describe "Test city and state/territory parsing" $ do
     it "can extract the city and state from in between po box and postcode" $ do
@@ -126,12 +127,14 @@ main = hspec $ do
                              >> spaceOrStop
                              >> digits
                              >> spaceOrStop
-                             >> takeUntil digits) mempty addEx
+                             >> takeUntil digits) mempty $
+            (encodeUtf8 . T.toCaseFold) addEx
       x `shouldBe` "sydney nsw "
   describe "Test PO Box address parsing" $ do
     it "can extract a type corresponding to a full PO Box address" $ do
       let (Success x) =
-            parseByteString poboxAddress mempty addEx
+            parseByteString poboxAddress mempty $
+            (encodeUtf8 . T.toCaseFold) addEx
       x `shouldBe` POBoxAddress "3898" "sydney" "nsw" "2001"
 
           

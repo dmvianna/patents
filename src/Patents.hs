@@ -22,6 +22,7 @@ import Lens.Micro ((%~))
 import Lens.Micro.Extras (view)
 import Data.Vinyl.Lens -- ∈ comes from here
 
+import Frames (Text)
 import Frames.ColumnUniverse
 import Frames.Rec
 import Frames.Frame
@@ -39,7 +40,7 @@ import Frames.CSV ( tableTypes'
                   , tablePrefix
                   , columnUniverse
                   )
-import Data.Text (Text)
+import Data.Text hiding (Text, take)
 import Data.Typeable
 import qualified Data.Text as T
 import qualified Data.Char as C
@@ -61,4 +62,5 @@ patStream = readTableOpt pAParser "data/pat_abstracts.csv"
 loadPat :: IO (Frame PA)
 loadPat = inCoreAoS patStream
 
--- mapM_ print (take 3 (F.toList a))
+-- a <- loadPat
+-- mapM_ print (take 2 (F.toList a))
