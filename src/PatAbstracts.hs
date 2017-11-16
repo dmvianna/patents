@@ -1,33 +1,36 @@
-{-# LANGUAGE DataKinds, DeriveDataTypeable, TypeFamilies, TypeOperators #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings  #-}
+{-# LANGUAGE QuasiQuotes        #-}
+{-# LANGUAGE TypeFamilies       #-}
+{-# LANGUAGE TypeOperators      #-}
 
 module PatAbstracts where
 
 -- Parsing
 
-import Control.Applicative
-import Data.Char
-import Data.ByteString (ByteString)
-import Text.RawString.QQ
-import Text.Trifecta
-import Text.Parser.LookAhead
-import qualified Data.Text as T hiding (Text)
-import Data.Text.Encoding
-import Test.Hspec
+import           Control.Applicative
+import           Data.ByteString       (ByteString)
+import           Data.Char
+import qualified Data.Text             as T hiding (Text)
+import           Data.Text.Encoding
+import           Test.Hspec
+import           Text.Parser.LookAhead
+import           Text.RawString.QQ
+import           Text.Trifecta
 
 -- Frames
-import Control.Monad (mzero)
-import Data.Readable (Readable(fromText))
-import Data.Typeable
-import Frames.ColumnTypeable (Parseable)
-import qualified Data.Vector as V
-import Frames.InCore (VectorFor)
-import Frames
+import           Control.Monad         (mzero)
+import           Data.Readable         (Readable (fromText))
+import           Data.Typeable
+import qualified Data.Vector           as V
+import           Frames
+import           Frames.ColumnTypeable (Parseable)
+import           Frames.InCore         (VectorFor)
 
 -- column types
 
-type instance VectorFor Address = V.Vector
+-- type instance VectorFor Address = V.Vector
 
 instance Readable Address where
   fromText t =
@@ -35,11 +38,10 @@ instance Readable Address where
       parseByteString poboxAddress mempty (
       (encodeUtf8 . T.toCaseFold) t) of
       Success x -> pure x
-      Failure e -> pure $ NoAddress e
+      -- Failure e -> pure $ NoAddress e
+      Failure e -> mzero
 
 instance Parseable Address where
-
-type MyColumns = '[Bool, Int, Double, Address, Text]
 
 -- parsing
 
@@ -61,7 +63,7 @@ instance Eq Address where
   _ == NoAddress _ = False
   POBoxAddress a b c d == POBoxAddress a' b' c' d' =
     (a == a') && (b == b') && (c == c') && (d == d')
-  
+
 
 spaceOrStop :: Parser String
 spaceOrStop = many $ oneOf ". ,"
@@ -95,7 +97,7 @@ takeUntil p' =
       (try (lookAhead p) >> return xs) <|> do
       c <- anyChar
       go p (T.snoc xs c)
-  
+
 poboxAddress :: Parser Address
 poboxAddress = do
   _ <- skipUntil poBox
@@ -137,4 +139,4 @@ main = hspec $ do
             (encodeUtf8 . T.toCaseFold) addEx
       x `shouldBe` POBoxAddress "3898" "sydney" "nsw" "2001"
 
-          
+
