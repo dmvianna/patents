@@ -21,7 +21,7 @@ executable patents
                      , base
                      , bytestring
                      , foldl
-                     , ghc-mod
+                     -- , ghc-mod
                      , hspec
                      , microlens
                      , parsers
