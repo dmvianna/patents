@@ -50,7 +50,9 @@ type PA = Record PatColumns
 type PAMaybe = Rec Maybe PatColumns
 
 patStreamM :: Producer PAMaybe IO ()
-patStreamM = readTableMaybe "data/pat_abstracts.csv"
+patStreamM = readTableMaybe "../data/pat_abstracts.csv"
+-- patStreamM = readTableMaybe "../data/IPGOD.IPGOD122B_PAT_ABSTRACTS.csv"
+
 
 printValidAddresses :: IO ()
 printValidAddresses =
