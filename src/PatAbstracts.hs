@@ -144,5 +144,10 @@ main = hspec $ do
             parseByteString poboxAddress mempty $
             (encodeUtf8 . T.toCaseFold) "po box 1234k melbourne vic 3001"
       x `shouldBe` POBoxAddress "1234" "melbourne" "vic" "3001"
+    it "parses kingston" $ do
+      let (Success x) =
+            parseByteString poboxAddress mempty $
+            (encodeUtf8 . T.toCaseFold) "po box 1234 kingston vic 3001"
+      x `shouldBe` POBoxAddress "1234" "kingston" "vic" "3001"
 
 
