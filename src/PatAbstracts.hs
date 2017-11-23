@@ -103,6 +103,7 @@ poboxAddress = do
   _ <- skipUntil poBox
   _ <- spaceOrStop
   b <- digits
+  _ <- optional (text "k")
   _ <- spaceOrStop
   a' <- takeUntil (spaceOrStop >> digits)
   let (a'', s') = T.breakOnEnd " " a'
@@ -138,5 +139,10 @@ main = hspec $ do
             parseByteString poboxAddress mempty $
             (encodeUtf8 . T.toCaseFold) addEx
       x `shouldBe` POBoxAddress "3898" "sydney" "nsw" "2001"
+    it "ignores the character K when appended to PO BOX number" $ do
+      let (Success x) =
+            parseByteString poboxAddress mempty $
+            (encodeUtf8 . T.toCaseFold) "po box 1234k melbourne vic 3001"
+      x `shouldBe` POBoxAddress "1234" "melbourne" "vic" "3001"
 
 
