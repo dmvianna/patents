@@ -26,9 +26,8 @@ type PA = Record PatColumns
 type PAMaybe = Rec Maybe PatColumns
 
 patStreamM :: MonadSafe m => Producer PAMaybe m ()
--- patStreamM = readFileLatin1Ln "data/pat_abstracts.csv" >-> pipeTableMaybe
-patStreamM = readFileLatin1Ln "../data/IPGOD.IPGOD122B_PAT_ABSTRACTS.csv" >-> pipeTableMaybe
-
+patStreamM = readFileLatin1Ln "data/pat_abstracts.csv" >-> pipeTableMaybe
+-- patStreamM = readFileLatin1Ln "../data/IPGOD.IPGOD122B_PAT_ABSTRACTS.csv" >-> pipeTableMaybe
 
 printValidAddresses :: IO ()
 printValidAddresses =
