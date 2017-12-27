@@ -26,8 +26,10 @@ dependencies:
 - vinyl
 executables:
   patents:
-    main: Patents.hs
+    main: Main.hs
     source-dirs: src
 library:
   source-dirs: src
-  other-modules: PatAbstracts
+  other-modules:
+  - PatAbstracts
+  - Patents
