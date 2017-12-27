@@ -1,34 +1,45 @@
-name:                patents
-version:             0.1.0.0
--- synopsis:
--- description:
-homepage:            https://github.com/dmvianna/patents#readme
-license:             BSD3
-license-file:        LICENSE
-author:              Daniel Vianna
-maintainer:          dmvianna <at> gmail.com
-copyright:           2017 Daniel Vianna
-category:            Data
-build-type:          Simple
-cabal-version:       >=1.10
-extra-source-files:  README.md
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 32a36fc91431559ebb8559f1e879cff9c26ee76f065e8f8853bb372818698f8f
+
+name:           patents
+version:        0.1.0.0
+category:       Data
+homepage:       https://github.com/dmvianna/patents#readme
+author:         Daniel Vianna
+maintainer:     dmvianna <at> gmail.com
+copyright:      2017 Daniel Vianna
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    README.md
 
 executable patents
-  hs-source-dirs:      src
-  main-is:             Main.hs
-  default-language:    Haskell2010
-  build-depends:       Frames
-                     , base
-                     , bytestring
-                     , foldl
-                     -- , ghc-mod
-                     , hspec
-                     , microlens
-                     , parsers
-                     , pipes
-                     , raw-strings-qq
-                     , readable
-                     , text
-                     , trifecta
-                     , vector
-                     , vinyl
+  main-is: Main.hs
+  hs-source-dirs:
+      src
+  build-depends:
+      Frames
+    , base
+    , bytestring
+    , foldl
+    , hspec
+    , microlens
+    , parsers
+    , pipes
+    , raw-strings-qq
+    , readable
+    , text
+    , trifecta
+    , vector
+    , vinyl
+  other-modules:
+      PatAbstracts
+      Patents
+      Paths_patents
+  default-language: Haskell2010

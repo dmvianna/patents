@@ -1,0 +1,29 @@
+name: patents
+version: '0.1.0.0'
+category: Data
+author: Daniel Vianna
+maintainer: dmvianna <at> gmail.com
+copyright: 2017 Daniel Vianna
+license: BSD3
+homepage: https://github.com/dmvianna/patents#readme
+extra-source-files:
+- README.md
+dependencies:
+- Frames
+- base
+- bytestring
+- foldl
+- hspec
+- microlens
+- parsers
+- pipes
+- raw-strings-qq
+- readable
+- text
+- trifecta
+- vector
+- vinyl
+executables:
+  patents:
+    main: Main.hs
+    source-dirs: src

@@ -2,9 +2,4 @@ flags: {}
 extra-package-dbs: []
 packages:
 - .
-- location:
-    git: https://github.com/acowley/Frames
-    commit: f0d41b5e54097a1e676057004d9d4f7775566f4e
-extra-deps:
-- ghc-mod-5.8.0.0
-resolver: nightly-2017-11-16
+resolver: lts-10.1
