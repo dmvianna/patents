@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 32a36fc91431559ebb8559f1e879cff9c26ee76f065e8f8853bb372818698f8f
+-- hash: fd5908ed7c39bd0b73945743bbd9b0917bf5901d8ccd29e381d8a90c9697ae9b
 
 name:           patents
 version:        0.1.0.0
@@ -19,12 +19,38 @@ cabal-version:  >= 1.10
 extra-source-files:
     README.md
 
-executable patents
-  main-is: Main.hs
+library
   hs-source-dirs:
       src
   build-depends:
       Frames
+    , addresses
+    , base
+    , bytestring
+    , foldl
+    , hspec
+    , microlens
+    , parsers
+    , pipes
+    , raw-strings-qq
+    , readable
+    , text
+    , trifecta
+    , vector
+    , vinyl
+  exposed-modules:
+      Patents
+  other-modules:
+      PatAbstracts
+  default-language: Haskell2010
+
+executable patents
+  main-is: Patents.hs
+  hs-source-dirs:
+      src
+  build-depends:
+      Frames
+    , addresses
     , base
     , bytestring
     , foldl
@@ -40,6 +66,5 @@ executable patents
     , vinyl
   other-modules:
       PatAbstracts
-      Patents
       Paths_patents
   default-language: Haskell2010

@@ -9,6 +9,7 @@ homepage: https://github.com/dmvianna/patents#readme
 extra-source-files:
 - README.md
 dependencies:
+- addresses
 - Frames
 - base
 - bytestring
@@ -25,5 +26,8 @@ dependencies:
 - vinyl
 executables:
   patents:
-    main: Main.hs
+    main: Patents.hs
     source-dirs: src
+library:
+  source-dirs: src
+  other-modules: PatAbstracts

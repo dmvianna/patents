@@ -2,4 +2,7 @@ flags: {}
 extra-package-dbs: []
 packages:
 - .
+extra-deps:
+  - git: https://github.com/dmvianna/addresses
+    commit: 7d9e8b3c6e48448369de7f7e1061b5cf21f17399
 resolver: lts-10.1

@@ -5,7 +5,7 @@ I'm learning how to parse big CSV files in Haskell. This is my [third attempt](h
 ## The dataset
 The data we'll be analysing are the [public records of Australian patents](https://ipaustralia.gov.au/about-us/economics-ip/ip-government-open-data). You can get the CSV files from data.gov.au. No, I will not include 785 MB of data (compressed) in this repository.
 
-I have the data files in `../data`, this being a reference from the source root. I also created a small dataset to text the code before running the full thing with
+I have the data files in `../data`, this being a reference from the source root. I also created a small dataset to test the code before running the full thing with
 ```bash
 $ head -n 20 IPGOD.IPGOD122B_PAT_ABSTRACTS.csv > pat_abstracts.csv
 ```

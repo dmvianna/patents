@@ -10,6 +10,7 @@
 
 module Patents where
 
+import           Addresses
 import           Pipes         (Producer, (>->))
 import qualified Pipes.Prelude as P
 
@@ -17,11 +18,11 @@ import           Data.Vinyl    (Rec)
 import           Frames        ((:->), MonadSafe, Text, runSafeEffect)
 import           Frames.CSV    (declareColumn, pipeTableMaybe, readFileLatin1Ln)
 import           Frames.Rec
-import           PatAbstracts
+import           PatAbstracts  ()
 
 declareColumn "patId" ''Text
-declareColumn "abstract" ''Address
-type PatColumns = '["id" :-> Text, "abstract" :-> Address]
+declareColumn "abstract" ''AddressLocation
+type PatColumns = '["id" :-> Text, "abstract" :-> AddressLocation]
 type PA = Record PatColumns
 type PAMaybe = Rec Maybe PatColumns
 
