@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b54111ec26085745f6a3abda76478271b43a92e2cebdc2e54a668e87ed02b0ee
+-- hash: 57fc0c6fe0b447bac2545578ede986f824daeb28b0302468fee272e688f23e0f
 
 name:           patents
 version:        0.1.0.0
@@ -40,9 +40,10 @@ library
     , vinyl
   exposed-modules:
       Main
-  other-modules:
       PatAbstracts
       Patents
+  other-modules:
+      Paths_patents
   default-language: Haskell2010
 
 executable patents

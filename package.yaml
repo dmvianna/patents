@@ -30,6 +30,3 @@ executables:
     source-dirs: src
 library:
   source-dirs: src
-  other-modules:
-  - PatAbstracts
-  - Patents
