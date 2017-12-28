@@ -39,6 +39,7 @@ printValidAddresses =
 
 -- filtering
 
+isStreetAddress :: AddressLocation -> Bool
 isStreetAddress (AStreetAddress _) = True
 isStreetAddress _                  = False
 
