@@ -12,6 +12,7 @@ module Patents where
 
 import           Addresses
 import           Pipes             (Pipe, Producer, (>->))
+import           Pipes.Internal    (Proxy)
 import qualified Pipes.Prelude     as P
 
 import           Data.Vinyl        (Rec)
@@ -21,7 +22,7 @@ import           Frames.CSV        (declareColumn, pipeTableMaybe,
                                     readFileLatin1Ln)
 import           Frames.Rec
 import           Lens.Micro.Extras (view)
-import           PatAbstracts
+import           PatAbstracts      ()
 
 declareColumn "patId" ''Text
 declareColumn "abstract" ''AddressLocation
@@ -46,6 +47,9 @@ isStreetAddress _                  = False
 addresses :: (Abstract ∈ rs, Monad m) => Pipe (Record rs) (Record rs) m r
 addresses = P.filter (isStreetAddress . view abstract)
 
+deMaybe :: Monad m => Proxy () (Rec Maybe cs) () (Record cs) m r
+deMaybe = P.map recMaybe >-> P.concat
+
 runMaybeTake :: Int -> IO ()
 runMaybeTake n =
-  runSafeEffect $ patStreamM >-> P.map recMaybe >-> P.concat >-> addresses >-> P.take n >->  P.print
+  runSafeEffect $ patStreamM >-> deMaybe >-> addresses >-> P.take n >->  P.print
