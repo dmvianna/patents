@@ -21,7 +21,7 @@ import           Frames.CSV        (declareColumn, pipeTableMaybe,
                                     readFileLatin1Ln)
 import           Frames.Rec
 import           Lens.Micro.Extras (view)
-import           PatAbstracts
+import           PatAbstracts      ()
 
 declareColumn "patId" ''Text
 declareColumn "abstract" ''AddressLocation
