@@ -4,5 +4,5 @@ packages:
 - .
 extra-deps:
   - git: https://github.com/dmvianna/addresses
-    commit: c01ca5745f59fcae22b60a56c5505990aed1d46a
+    commit: 86a634e1fed9292696e56259404e2eea8a08ef76
 resolver: lts-10.1

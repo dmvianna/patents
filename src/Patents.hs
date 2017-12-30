@@ -25,8 +25,8 @@ import           Lens.Micro.Extras (view)
 import           PatAbstracts      ()
 
 declareColumn "patId" ''Text
-declareColumn "abstract" ''AddressLocation
-type PatColumns = '["id" :-> Text, "abstract" :-> AddressLocation]
+declareColumn "abstract" ''AuAddress
+type PatColumns = '["id" :-> Text, "abstract" :-> AuAddress]
 type PA = Record PatColumns
 type PAMaybe = Rec Maybe PatColumns
 
@@ -40,12 +40,12 @@ printValidAddresses =
 
 -- filtering
 
-isStreetAddress :: AddressLocation -> Bool
-isStreetAddress (AStreetAddress _) = True
-isStreetAddress _                  = False
+isAuAddress :: AuAddress -> Bool
+isAuAddress (AuAddress _ _) = True
+isAuAddress _               = False
 
 addresses :: (Abstract ∈ rs, Monad m) => Pipe (Record rs) (Record rs) m r
-addresses = P.filter (isStreetAddress . view abstract)
+addresses = P.filter (isAuAddress . view abstract)
 
 deMaybe :: Monad m => Proxy () (Rec Maybe cs) () (Record cs) m r
 deMaybe = P.map recMaybe >-> P.concat

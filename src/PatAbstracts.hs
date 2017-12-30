@@ -32,15 +32,15 @@ import           Frames.InCore         (VectorFor)
 
 import           Addresses
 
-instance Readable AddressLocation where
+instance Readable AuAddress where
   fromText t =
     case
-      parseByteString step mempty (
+      parseByteString (step auAddress) mempty (
       (encodeUtf8 . T.toCaseFold) t) of
       Success x -> pure x
       Failure e -> mzero
 
-instance Parseable AddressLocation where
+instance Parseable AuAddress where
 
 -- parsing
 
