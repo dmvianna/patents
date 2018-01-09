@@ -24,6 +24,7 @@ dependencies:
 - trifecta
 - vector
 - vinyl
+- pipes-csv
 executables:
   patents:
     main: Main.hs

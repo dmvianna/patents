@@ -42,7 +42,6 @@ printValidAddresses =
 
 isAuAddress :: AuAddress -> Bool
 isAuAddress (AuAddress _ _) = True
-isAuAddress _               = False
 
 addresses :: (Abstract ∈ rs, Monad m) => Pipe (Record rs) (Record rs) m r
 addresses = P.filter (isAuAddress . view abstract)
@@ -52,4 +51,9 @@ deMaybe = P.map recMaybe >-> P.concat
 
 runMaybeTake :: Int -> IO ()
 runMaybeTake n =
-  runSafeEffect $ patStreamM >-> deMaybe >-> addresses >-> P.take n >->  P.print
+  runSafeEffect $
+  patStreamM >->
+  deMaybe >->
+  addresses >->
+  P.take n >->
+  P.print
