@@ -85,3 +85,10 @@ vicAddr = P.filter ((== (State "vic")) . _state . _addrLocality . view abstract)
 -- patStreamTake vicAddr 3 -- will render Victorian addresses
 -- patStreamTake streetAddresses 3 -- will render Street addresses
 -- patStreamTake (streetAddresses >-> vicAddr) 3 -- the intersection
+
+isPobox :: AddressLocation -> Bool
+isPobox (APobox _) = True
+isPobox _          = False
+
+poboxes :: (Abstract ∈ rs, Monad m) => Pipe (Record rs) (Record rs) m r
+poboxes = P.filter (isPobox . _addrLocation . view abstract)
