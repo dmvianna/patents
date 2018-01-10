@@ -1,6 +1,6 @@
 :set -XOverloadedStrings
 :set -XRecordWildCards
-:set -XDataKind
+:set -XDataKinds
 :set -XQuasiQuotes
 
 import Control.Exception (IOException)
