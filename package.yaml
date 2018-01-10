@@ -24,6 +24,8 @@ dependencies:
 - trifecta
 - vector
 - vinyl
+- pipes-safe
+- exceptions == 0.8.3
 executables:
   patents:
     main: Main.hs
