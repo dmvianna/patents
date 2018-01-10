@@ -42,7 +42,6 @@ printValidAddresses =
 
 isAuAddress :: AuAddress -> Bool
 isAuAddress (AuAddress _ _) = True
-isAuAddress _               = False
 
 addresses :: (Abstract ∈ rs, Monad m) => Pipe (Record rs) (Record rs) m r
 addresses = P.filter (isAuAddress . view abstract)
