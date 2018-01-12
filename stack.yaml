@@ -5,4 +5,6 @@ packages:
 extra-deps:
   - git: https://github.com/dmvianna/addresses
     commit: 86a634e1fed9292696e56259404e2eea8a08ef76
+  - git: https://github.com/acowley/Frames
+    commit: f817f03ad5db3d25552183dcce777d8fca0cc542
 resolver: lts-10.1

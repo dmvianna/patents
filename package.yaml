@@ -16,6 +16,7 @@ dependencies:
 - foldl
 - hspec
 - microlens
+- microlens-th
 - parsers
 - pipes
 - raw-strings-qq
