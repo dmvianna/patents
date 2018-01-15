@@ -18,6 +18,7 @@ import           Pipes                  (Pipe, Producer, (>->))
 import           Pipes.Internal         (Proxy)
 import qualified Pipes.Prelude          as P
 
+-- import           AddressCsv
 import           Data.Vinyl             (Rec)
 import           Data.Vinyl.Lens
 import           Frames                 ((:->), MonadSafe, SafeT, Text,
@@ -93,3 +94,4 @@ isPobox _          = False
 
 poboxes :: (Abstract ∈ rs, Monad m) => Pipe (Record rs) (Record rs) m r
 poboxes = P.filter (isPobox . _addrLocation . view abstract)
+
