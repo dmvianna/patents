@@ -11,6 +11,7 @@
 
 module Patents where
 
+import           AddressCsv
 import           Addresses
 import           Control.Monad.Catch    (MonadMask)
 import           Control.Monad.IO.Class (MonadIO)
@@ -95,3 +96,5 @@ isPobox _          = False
 poboxes :: (Abstract ∈ rs, Monad m) => Pipe (Record rs) (Record rs) m r
 poboxes = P.filter (isPobox . _addrLocation . view abstract)
 
+csv :: IO ()
+csv = runSafeEffect $ patStreamM >-> deMaybe >-> P.map (auStAddrRec . view abstract) >-> P.print
