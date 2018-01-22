@@ -19,6 +19,7 @@ dependencies:
 - microlens-th
 - parsers
 - pipes
+- pipes-text
 - raw-strings-qq
 - readable
 - text

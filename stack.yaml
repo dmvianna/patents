@@ -6,5 +6,5 @@ extra-deps:
   - git: https://github.com/dmvianna/addresses
     commit: b30ddfb04ea372cac50aeca65c84e901ba635bd9
   - git: https://github.com/acowley/Frames
-    commit: 1932620a9927ee8ac05a9d47ded06e5edb64fa4c
+    commit: f5ba4af72af3be59a0be2d5df28b8fa727f32a84
 resolver: lts-10.1

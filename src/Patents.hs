@@ -13,18 +13,19 @@ module Patents where
 
 import           AddressCsv
 import           Addresses
+import           Control.Monad          ((>=>))
 import           Control.Monad.Catch    (MonadMask)
 import           Control.Monad.IO.Class (MonadIO)
 import           Pipes                  (Pipe, Producer, (>->))
 import           Pipes.Internal         (Proxy)
 import qualified Pipes.Prelude          as P
+import qualified Pipes.Prelude.Text     as PT
 
 import           Data.Vinyl             (Rec)
 import           Data.Vinyl.Lens
 import           Frames                 ((:->), MonadSafe, SafeT, Text,
                                          runSafeEffect)
-import           Frames.CSV             (declareColumn, pipeTableMaybe,
-                                         readFileLatin1Ln)
+import           Frames.CSV
 import           Frames.Rec
 import           Lens.Micro.Extras      (view)
 import           PatAbstracts           ()
@@ -95,5 +96,11 @@ isPobox _          = False
 poboxes :: (Abstract ∈ rs, Monad m) => Pipe (Record rs) (Record rs) m r
 poboxes = P.filter (isPobox . _addrLocation . view abstract)
 
-csv :: IO ()
-csv = runSafeEffect $ patStreamM >-> deMaybe >-> P.map (auStAddrRec . view abstract) >-> P.concat >-> P.print
+streetsCSV :: FilePath -> IO ()
+streetsCSV fp =
+  runSafeEffect $
+  patStreamM >->
+  P.map (recMaybe >=> auStAddrRec . view abstract) >->
+  P.concat >->
+  pipeToCSV >->
+  PT.writeFileLn fp
